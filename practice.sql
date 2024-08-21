@@ -200,7 +200,7 @@ WHERE
 -- 全ての地方をグループ化せずに表示してください。
 
 SELECT
-    region
+    DISTINCT region
 FROM
     countries
 ;
@@ -226,7 +226,7 @@ FROM
 WHERE
     life_expectancy IS NOT NULL
 ORDER BY
-    life_expectancy ASC
+	life_expectancy ASC
 ;
 
 -- 問17
@@ -338,10 +338,10 @@ SELECT
     countrylanguages.language
 FROM
     countries
-JOIN
-	countrylanguages
-ON
-	countries.code = countrylanguages.country_code
+    JOIN
+	    countrylanguages
+    ON
+	    countries.code = countrylanguages.country_code
 ;
 
 -- 問26
@@ -353,14 +353,14 @@ SELECT
     countrylanguages.language
 FROM
     countries
-JOIN
-	countrylanguages
-ON
-	countries.code = countrylanguages.country_code
-LEFT JOIN
-    cities
-ON
-    countries.code = cities.country_code
+    JOIN
+	    countrylanguages
+    ON
+	    countries.code = countrylanguages.country_code
+    LEFT JOIN
+        cities
+    ON
+        countries.code = cities.country_code
 ;
 
 -- 問27
@@ -371,10 +371,10 @@ SELECT
     countries.name
 FROM
     celebrities
-LEFT JOIN
-    countries
-ON
-    celebrities.country_code = countries.code
+    LEFT JOIN
+        countries
+    ON
+        celebrities.country_code = countries.code
 ;
 
 -- 問28
@@ -386,19 +386,25 @@ SELECT
     countrylanguages.language AS language
 FROM
     celebrities
-LEFT JOIN
-    countries
-ON
-    celebrities.country_code = countries.code
-LEFT JOIN
-    countrylanguages
-ON
-    countries.code = countrylanguages.country_code
-    AND countrylanguages.is_official = TRUE
+    LEFT JOIN
+        countries
+    ON
+        celebrities.country_code = countries.code
+    LEFT JOIN
+        countrylanguages
+    ON
+        countries.code = countrylanguages.country_code
 WHERE
-    countries.name IS NOT NULL
-    AND countrylanguages.language IS NOT NULL
+    countrylanguages.percentage = (
+	SELECT
+		MAX(percentage)
+	FROM
+		countrylanguages
+	WHERE
+		country_code = countries.code
+    )
 ;
+
 
 -- 問29
 -- 全ての有名人の名前と国名をに出力してください。 ただしテーブル結合せずサブクエリを使用してください。
@@ -419,10 +425,10 @@ SELECT
     MIN(celebrities.age) AS 'MIN(ce.age)'
 FROM
     countries
-JOIN
-    celebrities
-ON
-    countries.code = celebrities.country_code
+    JOIN
+	    celebrities
+    ON
+        countries.code = celebrities.country_code
 GROUP BY
     countries.code
 HAVING
@@ -458,10 +464,10 @@ SELECT
     AVG(celebrities.age) AS 平均年齢
 FROM
     countries
-JOIN
-    celebrities
-ON
-    countries.code = celebrities.country_code
+    JOIN
+        celebrities
+    ON
+        countries.code = celebrities.country_code
 GROUP BY
     countries.name
 ORDER BY
